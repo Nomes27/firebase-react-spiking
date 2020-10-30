@@ -16,7 +16,7 @@ class Questions extends React.Component {
     topic: "",
   };
 
-  getMultiple = (event) => {
+  getTopic = (event) => {
     let name = event.target.name;
     this.setState({ topic: name });
   };
@@ -27,7 +27,9 @@ class Questions extends React.Component {
 
   createRoom = () => {
     axios
-      .get(`https://opentdb.com/api.php?amount=10&${this.state.topic}`)
+      .get(
+        `https://opentdb.com/api.php?amount=10&type=multiple&category=${this.state.topic}`
+      )
       .then(({ data: { results } }) => {
         const mapped = results.map((result) => {
           return [
@@ -44,17 +46,32 @@ class Questions extends React.Component {
         });
       });
   };
-
+  //geog cat - https://opentdb.com/api.php?amount=10&type=multiple&category=22
   render() {
     return (
       <div>
         <p>click topic and then click create room</p>
         {/*} <button onClick={this.getQuestions}>General Knowledge</button> */}
-        <button name="multiple" onClick={this.getMultiple}>
-          Multiple Choice
+
+        <button name="22" onClick={this.getTopic}>
+          Geography{" "}
         </button>
-        <button onClick={this.finishQuiz}>Finish Quiz</button>
+        <button name="23" onClick={this.getTopic}>
+          History
+        </button>
+        <button name="24" onClick={this.getTopic}>
+          Politics
+        </button>
+        <button name="9" onClick={this.getTopic}>
+          General Knowledge
+        </button>
+        <button name="21" onClick={this.getTopic}>
+          Sports
+        </button>
+        <br></br>
         <button onClick={this.createRoom}>Create Room </button>
+        <br></br>
+        <button onClick={this.finishQuiz}>Finish Quiz</button>
       </div>
     );
   }
