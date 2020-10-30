@@ -9,49 +9,38 @@ import axios from "axios";
 const db = firebase.firestore();
 const generalKnowledge = db.collection("general knowledge");
 const multipleChoice = db.collection("multiplechoice");
+const rooms = db.collection("rooms");
+
 class Questions extends React.Component {
   state = {
-    0: { question: "", answer: "" },
-    1: { question: "", answer: "" },
-    2: { question: "", answer: "" },
+    topic: "",
   };
 
-  getQuestions = () => {
-    axios
-      .get("https://opentdb.com/api.php?amount=10")
-      .then(({ data: { results } }) => {
-        this.setState({
-          0: {
-            question: results[0].question,
-            answer: results[0].correct_answer,
-          },
-          1: {
-            question: results[1].question,
-            answer: results[1].correct_answer,
-          },
-          2: {
-            question: results[2].question,
-            answer: results[2].correct_answer,
-          },
-        });
-        generalKnowledge.doc().set({
-          question: this.state["0"].question,
-          answer: this.state["0"].answer,
-        });
-      });
+  getMultiple = (event) => {
+    let name = event.target.name;
+    this.setState({ topic: name });
   };
 
-  getMultiple = () => {
+  finishQuiz = () => {
+    //delete collection from database
+  };
+
+  createRoom = () => {
     axios
-      .get("https://opentdb.com/api.php?amount=10&type=multiple")
+      .get(`https://opentdb.com/api.php?amount=10&${this.state.topic}`)
       .then(({ data: { results } }) => {
-        console.log(results);
-        results.map((result) => {
-          multipleChoice.doc().set({
-            question: result.question,
-            correct_answer: result.correct_answer,
-            incorrect_answers: result.incorrect_answers,
-          });
+        const mapped = results.map((result) => {
+          return [
+            {
+              question: result.question,
+              correct_answer: result.correct_answer,
+              incorrect_answers: result.incorrect_answers,
+            },
+          ];
+        });
+        let merged = mapped.flat();
+        rooms.doc().set({
+          questions: merged,
         });
       });
   };
@@ -59,8 +48,13 @@ class Questions extends React.Component {
   render() {
     return (
       <div>
+        <p>click topic and then click create room</p>
         <button onClick={this.getQuestions}>General Knowledge</button>
-        <button onClick={this.getMultiple}>Multiple Choice</button>
+        <button name="multiple" onClick={this.getMultiple}>
+          Multiple Choice
+        </button>
+        <button onClick={this.finishQuiz}>Finish Quiz</button>
+        <button onClick={this.createRoom}>Create Room </button>
       </div>
     );
   }
