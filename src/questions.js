@@ -46,7 +46,7 @@ class Questions extends React.Component {
         });
       });
   };
-  //geog cat - https://opentdb.com/api.php?amount=10&type=multiple&category=22
+
   render() {
     return (
       <div>
