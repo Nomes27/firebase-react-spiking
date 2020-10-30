@@ -49,7 +49,7 @@ class Questions extends React.Component {
     return (
       <div>
         <p>click topic and then click create room</p>
-        <button onClick={this.getQuestions}>General Knowledge</button>
+        {/*} <button onClick={this.getQuestions}>General Knowledge</button> */}
         <button name="multiple" onClick={this.getMultiple}>
           Multiple Choice
         </button>
